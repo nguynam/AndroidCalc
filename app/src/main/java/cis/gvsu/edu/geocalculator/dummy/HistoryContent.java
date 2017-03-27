@@ -20,6 +20,18 @@ public class HistoryContent {
     }
 
     public static class HistoryItem {
+        static {
+            DateTime now = DateTime.now();
+            addItem(new HistoryItem("43.12444", "-85.3523", "42.1234", "85.3555",
+                    now.minusDays(1)));
+            addItem(new HistoryItem("42.12444", "-77.3523", "42.1234", "85.3555",
+                    now.minusDays(1)));
+            addItem(new HistoryItem("43.12444", "-85.3523", "42.1234", "85.3555",
+                    now.plusDays(1)));
+            addItem(new HistoryItem("55.12444", "-85.3523", "42.1234", "85.3555",
+                    now.plusDays(1)));
+        }
+
         public final String origLat;
         public final String origLng;
         public final String destLat;

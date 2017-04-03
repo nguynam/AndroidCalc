@@ -2,6 +2,8 @@ package cis.gvsu.edu.geocalculator;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -16,14 +18,20 @@ import java.text.DecimalFormat;
 import java.math.RoundingMode;
 import android.view.inputmethod.InputMethodManager;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.places.Places;
+
 import org.joda.time.DateTime;
+import org.parceler.Parcels;
 
 import cis.gvsu.edu.geocalculator.dummy.HistoryContent;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener{
 
     public static int SETTINGS_RESULT = 1;
     public static int HISTORY_RESULT = 2;
+    public static int LOCATION_RESULT = 3;
     private String bearingUnits = "degrees";
     private String distanceUnits = "kilometers";
 
@@ -38,12 +46,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+
+        GoogleApiClient apiClient = new GoogleApiClient.Builder(this)
+                .addApi(Places.GEO_DATA_API)
+                .addApi(Places.PLACE_DETECTION_API)
+                .enableAutoManage(this, this)
+                .build();
 
         Button clearButton = (Button)this.findViewById(R.id.clear);
         Button calcButton = (Button)this.findViewById(R.id.calc);
-//        Button settingsButton = (Button) this.findViewById(R.id.settings);
+        Button search = (Button)this.findViewById(R.id.signup);
 
         p1Lat = (EditText) this.findViewById(R.id.p1Lat);
         p1Lng = (EditText) this.findViewById(R.id.p1Lng);
@@ -70,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
             p2Lng.getText().clear();
             distance.setText("Distance:");
             bearing.setText("Bearing:");
+        });
+
+        search.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LocationActivity.class);
+                startActivityForResult(intent, LOCATION_RESULT);
+            }
         });
 
 //        settingsButton.setOnClickListener(v -> {
@@ -157,6 +177,15 @@ public class MainActivity extends AppCompatActivity {
             this.p2Lng.setText(vals[3]);
             this.updateScreen(); // code that updates the calcs.
         }
+        else if (resultCode == LOCATION_RESULT){
+            Parcelable parcel = data.getParcelableExtra("LOCATION");
+            LocationLookup location = Parcels.unwrap(parcel);
+            this.p1Lat.setText(String.valueOf(location.origLat));
+            this.p1Lng.setText(String.valueOf(location.origLng));
+            this.p2Lat.setText(String.valueOf(location.endLat));
+            this.p2Lng.setText(String.valueOf(location.endLng));
+            this.updateScreen();
+        }
     }
 
     @Override
@@ -178,5 +207,10 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        return;
     }
 }

@@ -44,17 +44,17 @@
         app:layout_constraintRight_toRightOf="@+id/p1Lat" />
 
     <Button
-        android:text="Calculate"
-        android:layout_width="102dp"
-        android:layout_height="wrap_content"
         android:id="@+id/calc"
-        tools:layout_conversion_absoluteX="8dp"
-        tools:layout_conversion_absoluteY="83dp"
-        tools:layout_conversion_absoluteWidth="102dp"
-        tools:layout_conversion_absoluteHeight="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Calculate"
         app:layout_constraintLeft_toLeftOf="@+id/p1Lat"
         app:layout_constraintTop_toBottomOf="@+id/p2Lat"
-        android:layout_marginTop="8dp" />
+        tools:layout_conversion_absoluteHeight="48dp"
+        tools:layout_conversion_absoluteWidth="102dp"
+        tools:layout_conversion_absoluteX="8dp"
+        tools:layout_conversion_absoluteY="83dp" />
 
     <Button
         android:text="Clear"
